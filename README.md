@@ -62,6 +62,12 @@
 └── telegram_notifier/
 ```
 
-для Виндовс dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o ./publish
-для Линукс dotnet publish -c Release -r linux-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
+Если хотите просто собрать проект и запустить без докер
+то для этого вам нужно будет установить dotnet и запустить эти команды:
+```для Виндовс 
+dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o ./publish
+```
+```для Линукс 
+dotnet publish -c Release -r linux-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
+```
 
