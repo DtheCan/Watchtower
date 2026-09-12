@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: w2:latest
+    image: w2
     container_name: w2
     restart: unless-stopped
     ports:
