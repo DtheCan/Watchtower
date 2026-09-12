@@ -25,25 +25,22 @@
 
 ```json
 {
-  "CheckIntervalSeconds": 30,
-  "LogPath": "/var/log/wachtower-logs",
+  "CheckIntervalSeconds": 5,
+  "UnreachableCheckIntervalSeconds": 120,
+  "LogPath": "var/log/watchtower",
   "Services": [
     {
       "Name": "nginx",
-      "Host": "192.168.1.10",
-      "Type": "systemd",
+      "Host": "ваш айпи адрес сервера",
+      "Port": 80,
+      "Type": "port",
       "SshUser": "root",
-      "SshPassword": "your_password"
-    },
-    {
-      "Name": "mysql",
-      "Host": "localhost",
-      "Type": "systemd"
+      "SshPassword": "ваш SSH-пароль"
     }
   ],
   "Telegram": {
-    "BotToken": "ВАШ_ТОКЕН_БОТА",
-    "ChatId": "ВАШ_CHAT_ID"
+    "BotToken": "Ваш тг-токен-бота",
+    "ChatId": "ваш чат айди"
   }
 }
 ```
