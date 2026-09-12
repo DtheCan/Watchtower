@@ -10,8 +10,8 @@
 #### Создать бота:
 Открыть Telegram, найти @BotFather
 Отправить /newbot
-Выбрать имя: Watchtower Monitor
-Выбрать username: watchtower_monitor_bot
+Выбрать имя: <ВАШЕ_ИМЯ_БОТА>
+Выбрать username: <ВАШ_ИМЯ_ПРОФИЛЯbot>
 Скопировать полученный токен
 
 ### Получить Chat ID:
