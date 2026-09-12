@@ -14,4 +14,4 @@ obj/
 Thumbs.db
 
 # Секреты (если решите вынести конфиг)
-watchtower-configuration.json
+# watchtower-configuration.json
