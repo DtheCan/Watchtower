@@ -76,6 +76,8 @@ BotToken
 Что означает: «я знаю только, что сервис должен слушать порт, но не знаю, как его перезапускать».
 То есть ничего не перезапускает — просто пишет предупреждение в лог и в Telegram.
 
+Ниже есть таблицы для популярных сервисов
+
 ### Логи
 Логи сохраняются:
 ```
@@ -93,4 +95,43 @@ dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=
 ```для Линукс 
 dotnet publish -c Release -r linux-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
 ```
+
+systemd — основной вариант (используй по умолчанию)
+Подходит для всего, что установлено через apt / yum / dnf и управляется systemd. Name = имя unit-файла (без .service).
+
+Категория	Сервис	Name в конфиге	Порт для проверки
+Веб-сервер	Nginx	nginx	80 / 443
+Веб-сервер	Apache	apache2 (Debian) / httpd (RHEL)	80 / 443
+База данных	PostgreSQL	postgresql	5432
+База данных	MySQL	mysql	3306
+База данных	MariaDB	mariadb	3306
+База данных	MongoDB	mongod	27017
+Кэш	Redis	redis / redis-server	6379
+Кэш	Memcached	memcached	11211
+Очередь	RabbitMQ	rabbitmq-server	5672
+Очередь	Kafka	kafka	9092
+Контейнеры	Docker	docker	2375 / 2376
+Виртуализация	libvirt	libvirtd	16509
+VPN	WireGuard	wg-quick@wg0	51820
+VPN	OpenVPN	openvpn@server	1194
+Прокси	HAProxy	haproxy	80 / 443
+Прокси	Traefik (если ставился как service)	traefik	80 / 443
+Мониторинг	Prometheus	prometheus	9090
+Мониторинг	Grafana	grafana-server	3000
+Мониторинг	Node Exporter	node_exporter	9100
+Логи	Filebeat	filebeat	—
+Логи	Logstash	logstash	5044
+Почта	Postfix	postfix	25 / 587
+Почта	Dovecot	dovecot	143 / 993
+DNS	Bind9	bind9 / named	53
+DNS	dnsmasq	dnsmasq	53
+DHCP	ISC DHCP	isc-dhcp-server	67
+Файлы	Samba	smbd	445
+Файлы	NFS	nfs-server	2049
+CI/CD	GitLab Runner	gitlab-runner	—
+CI/CD	Jenkins (если как service)	jenkins	8080
+Веб-приложение	Gunicorn (через systemd unit)	myapp	8000
+Веб-приложение	Uvicorn (через systemd unit)	myapp	8000
+Node.js	PM2 (если через systemd)	pm2-root	3000
+
 
