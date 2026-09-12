@@ -21,7 +21,7 @@
 Найти "chat":{"id":123456789} в ответе
 
 ### Настройка конфигурации
-Отредактировать /opt/wachtower/wachtower_configuration.json
+Создайте файл /opt/wachtower/wachtower_configuration.json
 
 ```json
 {
