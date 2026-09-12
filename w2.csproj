@@ -7,9 +7,6 @@
   <ImplicitUsings>enable</ImplicitUsings>
   
   <!-- ГЛАВНОЕ: сборка в один файл под Linux -->
-  <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
-  <SelfContained>true</SelfContained>
-  <PublishSingleFile>true</PublishSingleFile>
   <PublishTrimmed>false</PublishTrimmed>
   <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
   <InvariantGlobalization>true</InvariantGlobalization>
