@@ -54,7 +54,7 @@
 - Telegram - настройки Telegram бота
 
 ### Логи
-Логи созраняются:
+Логи сохраняются:
 ```
 /var/log/wachtower-logs/
 ├── health_check_service/
