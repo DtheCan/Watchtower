@@ -76,7 +76,7 @@ BotToken
 Что означает: «я знаю только, что сервис должен слушать порт, но не знаю, как его перезапускать».
 То есть ничего не перезапускает — просто пишет предупреждение в лог и в Telegram.
 
-Ниже есть таблицы для популярных сервисов
+Ниже есть таблицы для каких сервисов какой параметр можно ставить
 
 ### Логи
 Логи сохраняются:
@@ -95,9 +95,6 @@ dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=
 ```для Линукс 
 dotnet publish -c Release -r linux-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
 ```
-
-systemd — основной вариант (используй по умолчанию)
-Подходит для всего, что установлено через apt / yum / dnf и управляется systemd. Name = имя unit-файла (без .service).
 
 ## `systemd` — основной вариант
 
