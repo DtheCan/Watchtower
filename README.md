@@ -27,7 +27,7 @@
 {
   "CheckIntervalSeconds": 5,
   "UnreachableCheckIntervalSeconds": 120,
-  "LogPath": "var/log/watchtower",
+  "LogPath": "/var/log/watchtower",
   "Services": [
     {
       "Name": "nginx",
