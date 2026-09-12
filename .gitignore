@@ -1,0 +1,17 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+.vscode/
+
+# Docker
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Секреты (если решите вынести конфиг)
+watchtower-configuration.json

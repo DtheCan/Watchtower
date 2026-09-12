@@ -5,15 +5,16 @@
   "Services": [
     {
       "Name": "nginx",
-      "Host": "айпи-адрес-сервера",
+      "Host": "72.56.109.207",
       "Port": 80,
       "Type": "port",
       "SshUser": "root",
-      "SshPassword": "пароль"
+      "SshPassword": "r2T7Rnre*.BoT?"
     }
   ],
   "Telegram": {
-    "BotToken": "тг-токен-бота",
-    "ChatId": "чат-id-с ботом"
+    "BotToken": "8629550095:AAEsR15scMSRFW0hGWYc5gVDXA3BVZOjn3A",
+    "ChatId": "446690960"
   }
 }
+
