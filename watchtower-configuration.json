@@ -1,0 +1,20 @@
+{
+  "CheckIntervalSeconds": 5,
+  "UnreachableCheckIntervalSeconds": 120,
+  "LogPath": "/var/log/watchtower",
+  "Services": [
+    {
+      "Name": "nginx",
+      "Host": "ваш айпи адрес сервера",
+      "Port": 80,
+      "Type": "port",
+      "SshUser": "root",
+      "SshPassword": "ваш SSH-пароль"
+    }
+  ],
+  "Telegram": {
+    "BotToken": "Ваш тг-токен-бота",
+    "ChatId": "ваш чат айди"
+  }
+}
+
