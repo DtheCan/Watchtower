@@ -13,7 +13,7 @@
     }
   ],
   "Telegram": {
-    "BotToken": "Ваш токен бота",
-    "ChatId": "Ваш Chat ID"
+    "BotToken": "ваш токен бота",
+    "ChatId": "ваш чат ID"
   }
 }
