@@ -61,7 +61,7 @@ sudo git clone https://github.com/DtheCan/watchtower.git /opt/
     - BotToken - токен бота которого вы создали в @botfather в телеграме
     - ChatId - id чата в который бот отправляет сообщения
 
-### Логи
+### 5.Логи
 Логи сохраняются:
 ```
 /var/log/wachtower-logs/
