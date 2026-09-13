@@ -76,15 +76,16 @@ public class HealthCheckService : BackgroundService
 
     private async Task CheckServiceAsync(ServiceConfig service, CancellationToken ct, bool isSlowProbe = false)
     {
-        var id = $"{service.Name} ({service.Host}:{service.Port})";
+        // Для логов — с хостом и портом
+        var logId = $"{service.Name} ({service.Host}:{service.Port})";
+        // Для Telegram — только имя сервиса
+        var tgId = service.Name;
+
         try
         {
-            // Если хост помечен как недоступный, а мы на "быстрой" итерации —
-            // просто пропускаем (проверим на медленной).
             if (!isSlowProbe && !_hostReachable.GetValueOrDefault(HostKey(service), true))
                 return;
 
-            // Если хост недоступен — ждём медленный интервал перед повторной проверкой.
             if (isSlowProbe)
             {
                 await Task.Delay(TimeSpan.FromSeconds(_unreachableCheckInterval), ct);
@@ -95,36 +96,35 @@ public class HealthCheckService : BackgroundService
             if (!reachable)
             {
                 _hostReachable[HostKey(service)] = false;
-                _logger.Warning($"[UNREACHABLE] {id} — host is not reachable. Will retry in {_unreachableCheckInterval}s.");
-                await _telegram.SendMessageAsync($"⚠️ {id} — сервер недоступен, повтор через {_unreachableCheckInterval}с.");
+                _logger.Warning($"[UNREACHABLE] {logId} — host is not reachable. Will retry in {_unreachableCheckInterval}s.");
+                await _telegram.SendMessageAsync($"⚠️ Сервис «{tgId}» — сервер недоступен, повтор через {_unreachableCheckInterval}с.");
                 return;
             }
 
-            // Хост снова доступен
             bool wasUnreachable = _hostReachable.TryGetValue(HostKey(service), out var prev) && !prev;
             _hostReachable[HostKey(service)] = true;
 
             if (wasUnreachable)
             {
-                _logger.Info($"[RECOVERED] {id} — host reachable again.");
-                await _telegram.SendMessageAsync($"🟢 {id} — сервер снова доступен.");
+                _logger.Info($"[RECOVERED] {logId} — host reachable again.");
+                await _telegram.SendMessageAsync($"🟢 Сервис «{tgId}» — сервер снова доступен.");
             }
 
             if (!isRunning)
             {
-                _logger.Warning($"[DOWN] {id} — service is DOWN.");
+                _logger.Warning($"[DOWN] {logId} — service is DOWN.");
                 await _restarter.RestartServiceAsync(service);
             }
             else
             {
-                _logger.Info($"[OK] {id} — service is running.");
+                _logger.Info($"[OK] {logId} — service is running.");
             }
         }
         catch (Exception ex)
         {
-            _logger.Error($"[CHECK-FAILED] {id} — {ex.Message}");
+            _logger.Error($"[CHECK-FAILED] {logId} — {ex.Message}");
             _hostReachable[HostKey(service)] = false;
-            await _telegram.SendMessageAsync($"⚠️ {id} — ошибка проверки: {ex.Message}");
+            await _telegram.SendMessageAsync($"⚠️ Сервис «{tgId}» — ошибка проверки: {ex.Message}");
         }
     }
 
