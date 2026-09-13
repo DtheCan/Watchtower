@@ -105,61 +105,66 @@ public class ServiceProbe
     /// </summary>
     private string BuildCheckCommand(string name, int port)
     {
-        // ВАЖНО: имя сервиса может отличаться от systemd-юнита,
-        // но в 90% случаев совпадает. Если нет — сработает проверка по порту.
-        //
-        // Логика:
-        // 1. systemd: systemctl is-active --quiet <name>  -> RUNNING
-        // 2. OpenRC:  rc-service <name> status | grep started
-        // 3. SysV:    /etc/init.d/<name> status | grep -E 'running|started'
-        // 4. process: pgrep -f <name>
-        // 5. port:    ss/netstat слушает порт
-        //
-        // Возвращаем "RUNNING" если ЛЮБОЙ из способов подтвердил.
-        // Если ни один — "STOPPED".
-
         return $@"
 (
-  # 1. systemd
+  # 1. systemd — САМЫЙ НАДЁЖНЫЙ
+  #    Если юнит есть и не активен — сервис точно лежит.
+  #    Проверяем именно наличие юнита, а не общий systemctl.
   if command -v systemctl >/dev/null 2>&1; then
-    if systemctl is-active --quiet '{name}' 2>/dev/null; then echo RUNNING; exit 0; fi
+    if systemctl list-unit-files 2>/dev/null | grep -qE '^{name}\.service\s'; then
+      if systemctl is-active --quiet '{name}' 2>/dev/null; then
+        echo RUNNING; exit 0
+      else
+        echo STOPPED; exit 0
+      fi
+    fi
   fi
 
   # 2. OpenRC
   if command -v rc-service >/dev/null 2>&1; then
-    if rc-service '{name}' status 2>/dev/null | grep -qi 'started'; then echo RUNNING; exit 0; fi
+    if rc-service '{name}' status 2>/dev/null | grep -qi 'started'; then
+      echo RUNNING; exit 0
+    fi
   fi
 
   # 3. SysV init
   if [ -x /etc/init.d/'{name}' ]; then
-    if /etc/init.d/'{name}' status 2>/dev/null | grep -Eqi 'running|started'; then echo RUNNING; exit 0; fi
+    if /etc/init.d/'{name}' status 2>/dev/null | grep -Eqi 'running|started'; then
+      echo RUNNING; exit 0
+    fi
   fi
 
-  # 4. process по имени
+  # 4. процесс — ищем ТОЧНОЕ имя процесса, а не подстроку
+  #    pgrep -x требует точного совпадения имени (comm, до 15 символов)
   if command -v pgrep >/dev/null 2>&1; then
-    if pgrep -f '{name}' >/dev/null 2>&1; then echo RUNNING; exit 0; fi
+    if pgrep -x '{name}' >/dev/null 2>&1; then
+      echo RUNNING; exit 0
+    fi
   fi
 
   # 5. порт слушается
   if command -v ss >/dev/null 2>&1; then
-    if ss -ltn 2>/dev/null | grep -qE ':{port}\s'; then echo RUNNING; exit 0; fi
+    if ss -ltnH 2>/dev/null | awk '{{print $4}}' | grep -qE ':{port}$'; then
+      echo RUNNING; exit 0
+    fi
   elif command -v netstat >/dev/null 2>&1; then
-    if netstat -ltn 2>/dev/null | grep -qE ':{port}\s'; then echo RUNNING; exit 0; fi
+    if netstat -ltn 2>/dev/null | awk '{{print $4}}' | grep -qE ':{port}$'; then
+      echo RUNNING; exit 0
+    fi
   fi
 
   echo STOPPED
 )";
     }
 
-    /// <summary>
-    /// Команда перезапуска. Аналогично — последовательно.
-    /// </summary>
     private string BuildRestartCommand(string name)
-    {
-        return $@"
+{
+    return $@"
 (
-  if command -v systemctl >/dev/null 2>&1 && systemctl list-unit-files 2>/dev/null | grep -q '^{name}\.service'; then
-    systemctl restart '{name}' && exit 0
+  if command -v systemctl >/dev/null 2>&1; then
+    if systemctl list-unit-files 2>/dev/null | grep -qE '^{name}\.service\s'; then
+      systemctl restart '{name}' && exit 0
+    fi
   fi
   if command -v rc-service >/dev/null 2>&1; then
     rc-service '{name}' restart && exit 0
@@ -167,15 +172,9 @@ public class ServiceProbe
   if [ -x /etc/init.d/'{name}' ]; then
     /etc/init.d/'{name}' restart && exit 0
   fi
-  if command -v pgrep >/dev/null 2>&1; then
-    pkill -f '{name}' 2>/dev/null
-    sleep 1
-    nohup '{name}' >/dev/null 2>&1 &
-    exit 0
-  fi
   exit 1
 )";
-    }
+}
 
     private async Task<(bool, bool)> CheckViaSshAsync(ServiceConfig service)
     {
